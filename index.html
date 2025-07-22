@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Segundo Cérebro</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- CORREÇÃO: Caminho relativo explícito para o CSS -->
+    <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
 
     <main class="container">
+
         <!-- Card Roda da Vida -->
         <section id="rodaDaVidaCard" class="card clickable">
             <div class="card-header">
@@ -22,7 +24,7 @@
             </div>
         </section>
 
-        <!-- Card Reflexão Diária (agora clicável) -->
+        <!-- Card Reflexão Diária -->
         <section id="reflexaoCard" class="card clickable">
             <div class="card-header">
                 <i class="fa-regular fa-comment-dots"></i>
@@ -35,7 +37,7 @@
             </div>
         </section>
 
-        <!-- Card Conquista Diária (agora clicável) -->
+        <!-- Card Conquista Diária -->
         <section id="conquistaCard" class="card clickable">
             <div class="card-header">
                 <i class="fa-solid fa-trophy"></i>
@@ -48,47 +50,80 @@
             </div>
         </section>
 
-        <!-- Card Lembretes (sem alterações) -->
+        <!-- Card Lembretes -->
         <section class="card">
-            <!-- ... (código dos lembretes inalterado) ... -->
+            <div class="card-header">
+                <i class="fa-regular fa-bell"></i>
+                <h2>Lembretes</h2>
+            </div>
+            <div class="card-body">
+                <div class="add-task-container">
+                    <input type="text" id="lembreteInput" placeholder="Adicionar novo lembrete...">
+                    <button id="adicionarLembreteBtn" class="btn btn-primary"><i class="fa-solid fa-plus"></i></button>
+                </div>
+                <ul id="lembretesLista" class="todo-list"></ul>
+                <div class="todo-actions">
+                    <button id="limparListaBtn" class="btn btn-tertiary">Limpar Lista</button>
+                </div>
+            </div>
         </section>
     </main>
 
     <!-- ===== MODAIS ===== -->
 
-    <!-- Modal Gerenciar Roda da Vida (sem alterações) -->
+    <!-- Modal Gerenciar Roda da Vida -->
     <div id="gerenciarRodaModal" class="modal-overlay hidden">
-        <!-- ... (código do modal da Roda da Vida inalterado) ... -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Gerenciar Roda da Vida</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div id="listaPropriedadesRoda" class="propriedades-container"></div>
+            <div class="card add-prop-card">
+                <h3>Nova Propriedade</h3>
+                <input type="text" id="novaPropNome" placeholder="Nome da Área (Ex: Estudos)">
+                <div class="input-group">
+                    <div>
+                        <label for="novaPropMeta">Meta</label>
+                        <input type="number" id="novaPropMeta" value="10" min="1" max="10">
+                    </div>
+                    <div>
+                        <label for="novaPropAtual">Atual</label>
+                        <input type="number" id="novaPropAtual" value="5" min="0" max="10">
+                    </div>
+                </div>
+                <button id="adicionarPropriedadeBtn" class="btn btn-accent">
+                    <i class="fa-solid fa-plus"></i> Adicionar Propriedade
+                </button>
+            </div>
+        </div>
     </div>
 
-    <!-- NOVO: Modal Histórico de Reflexões -->
+    <!-- Modal Histórico de Reflexões -->
     <div id="historicoReflexoesModal" class="modal-overlay hidden">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Histórico de Reflexões</h2>
                 <button class="close-btn">&times;</button>
             </div>
-            <div id="listaHistoricoReflexoes" class="historico-container">
-                <!-- O histórico será inserido aqui -->
-            </div>
+            <div id="listaHistoricoReflexoes" class="historico-container"></div>
         </div>
     </div>
 
-    <!-- NOVO: Modal Histórico de Conquistas -->
+    <!-- Modal Histórico de Conquistas -->
     <div id="historicoConquistasModal" class="modal-overlay hidden">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Histórico de Conquistas</h2>
                 <button class="close-btn">&times;</button>
             </div>
-            <div id="listaHistoricoConquistas" class="historico-container">
-                <!-- O histórico será inserido aqui -->
-            </div>
+            <div id="listaHistoricoConquistas" class="historico-container"></div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="script.js"></script>
+    <!-- CORREÇÃO: Caminho relativo explícito para o JavaScript -->
+    <script src="./script.js"></script>
 
 </body>
 </html>
