@@ -1,25 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- BANCO DE PERGUNTAS PARA REFLEXÃO ---
+    // --- BANCO DE PERGUNTAS ---
     const bancoDePerguntas = [
         "Pelo que você se sentiu mais grato(a) hoje?", "Qual foi o maior desafio que você superou hoje?",
         "O que você aprendeu de novo hoje?", "Quem te fez sorrir hoje e por quê?",
-        "Qual pequeno passo você deu em direção a um grande objetivo?", "Como você demonstrou gentileza hoje (a si mesmo ou a outros)?",
+        "Qual pequeno passo você deu em direção a um grande objetivo?", "Como você demonstrou gentileza hoje?",
         "Qual momento de paz você encontrou no seu dia?", "O que te deixou mais energizado(a) hoje?",
         "Se pudesse reviver um momento de hoje, qual seria?", "Qual decisão você tomou hoje que te deixou orgulhoso(a)?"
     ];
 
     // --- ESTADO DA APLICAÇÃO ---
     let rodaDaVidaChart;
-    let rodaData = [];
-    let reflexoes = [];
-    let conquistas = [];
-    let lembretes = [];
-    let perguntaDoDia = { texto: '', data: '' };
+    let rodaData, reflexoes, conquistas, lembretes, perguntaDoDia;
 
-    // --- FUNÇÕES DE INICIALIZAÇÃO E PERSISTÊNCIA ---
+    // --- FUNÇÕES DE PERSISTÊNCIA (LocalStorage) ---
     const carregarDados = () => {
-        const dataSalvaRoda = localStorage.getItem('rodaDaVidaData');
-        rodaData = dataSalvaRoda ? JSON.parse(dataSalvaRoda) : [
+        rodaData = JSON.parse(localStorage.getItem('rodaDaVidaData')) || [
             { label: 'Finanças', meta: 10, atual: 6 }, { label: 'Carreira', meta: 10, atual: 8 },
             { label: 'Saúde', meta: 10, atual: 7 }, { label: 'Relacionamentos', meta: 10, atual: 9 },
             { label: 'Lazer', meta: 10, atual: 5 }, { label: 'Crescimento', meta: 10, atual: 8 },
@@ -42,168 +37,161 @@ document.addEventListener('DOMContentLoaded', () => {
     const salvarConquistas = () => localStorage.setItem('historicoConquistas', JSON.stringify(conquistas));
     const salvarLembretes = () => localStorage.setItem('lembretes', JSON.stringify(lembretes));
 
-    // --- ELEMENTOS DO DOM ---
-    const perguntaDoDiaEl = document.getElementById('perguntaDoDia');
-    const reflexaoInput = document.getElementById('reflexaoInput');
-    const salvarReflexaoBtn = document.getElementById('salvarReflexaoBtn');
-    const conquistaInput = document.getElementById('conquistaInput');
-    const salvarConquistaBtn = document.getElementById('salvarConquistaBtn');
-    const lembreteInput = document.getElementById('lembreteInput');
-    const adicionarLembreteBtn = document.getElementById('adicionarLembreteBtn');
-    const lembretesLista = document.getElementById('lembretesLista');
-    const limparListaBtn = document.getElementById('limparListaBtn');
-
     // --- FUNÇÕES DE RENDERIZAÇÃO ---
     const renderizarGraficoRoda = () => {
-        const ctx = document.getElementById('rodaDaVidaChart').getContext('2d');
-        const data = {
-            labels: rodaData.map(d => d.label),
-            datasets: [{
-                label: 'Nível de Satisfação', data: rodaData.map(d => d.atual), fill: true,
-                backgroundColor: 'rgba(193, 166, 255, 0.4)', borderColor: 'rgba(193, 166, 255, 1)',
-                pointBackgroundColor: 'rgba(193, 166, 255, 1)', pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff', pointHoverBorderColor: 'rgba(193, 166, 255, 1)'
-            }]
-        };
+        const canvas = document.getElementById('rodaDaVidaChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
         if (rodaDaVidaChart) rodaDaVidaChart.destroy();
         rodaDaVidaChart = new Chart(ctx, {
-            type: 'radar', data: data,
+            type: 'radar',
+            data: {
+                labels: rodaData.map(d => d.label),
+                datasets: [{
+                    label: 'Nível de Satisfação', data: rodaData.map(d => d.atual), fill: true,
+                    backgroundColor: 'rgba(193, 166, 255, 0.4)', borderColor: 'rgba(193, 166, 255, 1)',
+                    pointBackgroundColor: 'rgba(193, 166, 255, 1)', pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff', pointHoverBorderColor: 'rgba(193, 166, 255, 1)'
+                }]
+            },
             options: {
                 responsive: true, maintainAspectRatio: true, elements: { line: { borderWidth: 3 } },
-                scales: {
-                    r: {
-                        angleLines: { color: 'rgba(255, 255, 255, 0.2)' }, grid: { color: 'rgba(255, 255, 255, 0.2)' },
-                        pointLabels: { color: '#f0f0f0', font: { size: 12 } },
-                        ticks: { color: '#f0f0f0', backdropColor: 'rgba(0, 0, 0, 0.5)', stepSize: 2 },
-                        suggestedMin: 0, suggestedMax: 10
-                    }
-                },
+                scales: { r: {
+                    angleLines: { color: 'rgba(255, 255, 255, 0.2)' }, grid: { color: 'rgba(255, 255, 255, 0.2)' },
+                    pointLabels: { color: '#f5f5f7', font: { size: 12, family: 'Inter' } },
+                    ticks: { color: '#f5f5f7', backdropColor: 'rgba(0, 0, 0, 0.5)', stepSize: 2 },
+                    suggestedMin: 0, suggestedMax: 10
+                }},
                 plugins: { legend: { display: false } }
             }
         });
     };
+
     const renderizarLembretes = () => {
-        lembretesLista.innerHTML = '';
+        const lista = document.getElementById('lembretesLista');
+        if (!lista) return;
+        lista.innerHTML = '';
         lembretes.forEach((lembrete, index) => {
             const li = document.createElement('li');
             li.className = lembrete.completed ? 'completed' : '';
+            li.dataset.index = index;
             li.innerHTML = `<input type="checkbox" id="task-${index}" ${lembrete.completed ? 'checked' : ''}><label for="task-${index}">${lembrete.text}</label><button class="delete-btn">&times;</button>`;
-            li.querySelector('input').addEventListener('change', () => {
-                lembretes[index].completed = !lembretes[index].completed;
-                salvarLembretes(); renderizarLembretes();
-            });
-            li.querySelector('.delete-btn').addEventListener('click', () => {
-                lembretes.splice(index, 1);
-                salvarLembretes(); renderizarLembretes();
-            });
-            lembretesLista.appendChild(li);
+            lista.appendChild(li);
         });
     };
 
-    // --- LÓGICA PRINCIPAL ---
-    perguntaDoDiaEl.textContent = perguntaDoDia.texto;
-    salvarReflexaoBtn.addEventListener('click', () => {
-        const texto = reflexaoInput.value.trim();
-        if (texto) {
-            reflexoes.unshift({ pergunta: perguntaDoDia.texto, resposta: texto, data: new Date().toISOString() });
-            salvarReflexoes(); reflexaoInput.value = ''; alert('Reflexão salva!');
-        }
-    });
-    salvarConquistaBtn.addEventListener('click', () => {
-        const texto = conquistaInput.value.trim();
-        if (texto) {
-            conquistas.unshift({ resposta: texto, data: new Date().toISOString() });
-            salvarConquistas(); conquistaInput.value = ''; alert('Conquista salva!');
-        }
-    });
-    const adicionarLembrete = () => {
-        const texto = lembreteInput.value.trim();
-        if (texto) {
-            lembretes.push({ text: texto, completed: false });
-            lembreteInput.value = ''; salvarLembretes(); renderizarLembretes();
-        }
+    const atualizarPerguntaDoDia = () => {
+        const el = document.getElementById('perguntaDoDia');
+        if (el) el.textContent = perguntaDoDia.texto;
     };
-    adicionarLembreteBtn.addEventListener('click', adicionarLembrete);
-    lembreteInput.addEventListener('keypress', (e) => e.key === 'Enter' && adicionarLembrete());
-    limparListaBtn.addEventListener('click', () => {
-        lembretes = []; salvarLembretes(); renderizarLembretes();
-    });
 
-    // --- LÓGICA DOS MODAIS ---
-    const modals = {
-        roda: { card: document.getElementById('rodaDaVidaCard'), modal: document.getElementById('gerenciarRodaModal'), render: renderizarListaPropriedades },
-        reflexoes: { card: document.getElementById('reflexaoCard'), modal: document.getElementById('historicoReflexoesModal'), render: renderizarHistoricoReflexoes },
-        conquistas: { card: document.getElementById('conquistaCard'), modal: document.getElementById('historicoConquistasModal'), render: renderizarHistoricoConquistas }
+    // --- MODAIS ---
+    const abrirModal = (modalId, conteudo) => {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        modal.innerHTML = `<div class="modal-content">${conteudo}</div>`;
+        modal.classList.remove('hidden');
+        
+        // Adiciona listener para fechar o modal
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal || e.target.closest('.close-btn')) {
+                modal.classList.add('hidden');
+            }
+        });
     };
-    Object.values(modals).forEach(item => {
-        item.card.addEventListener('click', (e) => {
-            if (e.target.tagName.toLowerCase() !== 'textarea' && e.target.tagName.toLowerCase() !== 'button') {
-                item.render(); item.modal.classList.remove('hidden');
-            }
-        });
-        item.modal.addEventListener('click', (e) => {
-            if (e.target === item.modal || e.target.classList.contains('close-btn')) {
-                item.modal.classList.add('hidden');
-            }
-        });
-    });
 
-    // --- RODA DA VIDA: GERENCIAMENTO ---
-    const listaPropriedadesRoda = document.getElementById('listaPropriedadesRoda');
-    function renderizarListaPropriedades() {
-        listaPropriedadesRoda.innerHTML = '';
-        rodaData.forEach((prop, index) => {
-            const percentual = prop.meta > 0 ? Math.round((prop.atual / prop.meta) * 100) : 0;
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'prop-item';
-            itemDiv.innerHTML = `
-                <div class="prop-item-view">
-                    <div class="prop-item-header"><h3>${prop.label}</h3><div class="prop-item-actions"><button class="btn btn-primary edit-btn" data-index="${index}">Editar</button><button class="btn btn-danger delete-btn" data-index="${index}"><i class="fa-solid fa-trash"></i></button></div></div>
-                    <div class="prop-item-stats"><span><div class="dot meta"></div>Meta: ${prop.meta}</span><span><div class="dot atual"></div>Atual: ${prop.atual}</span><span><div class="dot percent"></div>${percentual}%</span></div>
-                </div>
-                <div class="prop-edit-form"></div>`;
-            listaPropriedadesRoda.appendChild(itemDiv);
-        });
-    }
-    listaPropriedadesRoda.addEventListener('click', (e) => {
-        const button = e.target.closest('button');
-        if (!button) return;
-        const index = button.dataset.index;
-        if (button.classList.contains('delete-btn')) {
-            if (confirm(`Tem certeza que deseja excluir "${rodaData[index].label}"?`)) {
-                rodaData.splice(index, 1); salvarRodaData(); renderizarGraficoRoda(); renderizarListaPropriedades();
-            }
-        } else if (button.classList.contains('edit-btn')) {
-            const itemView = button.closest('.prop-item').querySelector('.prop-item-view');
-            const editForm = button.closest('.prop-item').querySelector('.prop-edit-form');
-            const prop = rodaData[index];
-            editForm.innerHTML = `<input type="text" class="edit-label" value="${prop.label}"><div class="input-group"><div><label>Meta</label><input type="number" class="edit-meta" value="${prop.meta}" min="1" max="10"></div><div><label>Atual</label><input type="number" class="edit-atual" value="${prop.atual}" min="0" max="10"></div></div><div class="prop-item-actions"><button class="btn btn-success save-btn" data-index="${index}">Salvar</button><button class="btn btn-tertiary cancel-btn">Cancelar</button></div>`;
-            itemView.classList.add('hidden'); editForm.classList.add('visible');
-        } else if (button.classList.contains('save-btn')) {
-            const editForm = button.closest('.prop-edit-form');
-            rodaData[index] = { label: editForm.querySelector('.edit-label').value, meta: parseInt(editForm.querySelector('.edit-meta').value), atual: parseInt(editForm.querySelector('.edit-atual').value) };
-            salvarRodaData(); renderizarGraficoRoda(); renderizarListaPropriedades();
-        } else if (button.classList.contains('cancel-btn')) {
-            renderizarListaPropriedades();
-        }
-    });
-    document.getElementById('adicionarPropriedadeBtn').addEventListener('click', () => {
-        const nomeInput = document.getElementById('novaPropNome');
-        const nome = nomeInput.value.trim();
-        if (nome) {
-            rodaData.push({ label: nome, meta: parseInt(document.getElementById('novaPropMeta').value), atual: parseInt(document.getElementById('novaPropAtual').value) });
-            nomeInput.value = ''; salvarRodaData(); renderizarGraficoRoda(); renderizarListaPropriedades();
-        }
-    });
-
-    // --- HISTÓRICOS: RENDERIZAÇÃO E DELEÇÃO ---
     const formatarData = (iso) => new Date(iso).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
-    function renderizarHistoricoReflexoes() {
-        const container = document.getElementById('listaHistoricoReflexoes');
-        container.innerHTML = reflexoes.length === 0 ? `<div class="empty-state"><i class="fa-regular fa-comment-dots"></i><p>Nenhuma reflexão encontrada</p></div>` : '';
-        reflexoes.forEach((item, index) => {
-            container.innerHTML += `<div class="historico-item"><div class="historico-header"><span>${formatarData(item.data)}</span><button class="delete-btn" data-index="${index}"><i class="fa-solid fa-trash"></i></button></div><p class="historico-pergunta">${item.pergunta}</p><p class="historico-resposta">${item.resposta}</p></div>`;
+
+    // --- FUNÇÃO PRINCIPAL DE INICIALIZAÇÃO ---
+    const init = () => {
+        carregarDados();
+        renderizarGraficoRoda();
+        renderizarLembretes();
+        atualizarPerguntaDoDia();
+
+        // --- Event Listeners dos Cards Principais ---
+        document.getElementById('salvarReflexaoBtn')?.addEventListener('click', () => {
+            const input = document.getElementById('reflexaoInput');
+            if (input.value.trim()) {
+                reflexoes.unshift({ pergunta: perguntaDoDia.texto, resposta: input.value.trim(), data: new Date().toISOString() });
+                salvarReflexoes(); input.value = ''; alert('Reflexão salva!');
+            }
         });
-    }
-    function renderizarHistoricoConquistas() {
-        const container = document.getElementById('listaHistoricoCon
+
+        document.getElementById('salvarConquistaBtn')?.addEventListener('click', () => {
+            const input = document.getElementById('conquistaInput');
+            if (input.value.trim()) {
+                conquistas.unshift({ resposta: input.value.trim(), data: new Date().toISOString() });
+                salvarConquistas(); input.value = ''; alert('Conquista salva!');
+            }
+        });
+
+        document.getElementById('adicionarLembreteBtn')?.addEventListener('click', () => {
+            const input = document.getElementById('lembreteInput');
+            if (input.value.trim()) {
+                lembretes.push({ text: input.value.trim(), completed: false });
+                salvarLembretes(); renderizarLembretes(); input.value = '';
+            }
+        });
+
+        document.getElementById('limparListaBtn')?.addEventListener('click', () => {
+            if (confirm('Tem certeza que deseja limpar todos os lembretes?')) {
+                lembretes = []; salvarLembretes(); renderizarLembretes();
+            }
+        });
+
+        document.getElementById('lembretesLista')?.addEventListener('click', (e) => {
+            const li = e.target.closest('li');
+            if (!li) return;
+            const index = li.dataset.index;
+            if (e.target.matches('.delete-btn')) {
+                lembretes.splice(index, 1);
+            } else {
+                lembretes[index].completed = !lembretes[index].completed;
+            }
+            salvarLembretes(); renderizarLembretes();
+        });
+
+        // --- Event Listeners para abrir Modais ---
+        document.getElementById('rodaDaVidaCard')?.addEventListener('click', (e) => {
+            if (e.target.closest('canvas')) return;
+            let itemsHtml = rodaData.map((prop, index) => {
+                const percentual = prop.meta > 0 ? Math.round((prop.atual / prop.meta) * 100) : 0;
+                return `<div class="prop-item" data-index="${index}">
+                    <h3>${prop.label}</h3>
+                    <div class="prop-item-stats"><span>Meta: ${prop.meta}</span><span>Atual: ${prop.atual}</span><span>${percentual}%</span></div>
+                </div>`;
+            }).join('');
+            const modalContent = `
+                <div class="modal-header"><h2>Gerenciar Roda da Vida</h2><button class="close-btn">&times;</button></div>
+                <div class="propriedades-container">${itemsHtml}</div>
+            `;
+            abrirModal('gerenciarRodaModal', modalContent);
+        });
+
+        document.getElementById('reflexaoCard')?.addEventListener('click', (e) => {
+            if (e.target.closest('textarea, button')) return;
+            let itemsHtml = reflexoes.length > 0 ? reflexoes.map((item, index) => `
+                <div class="historico-item" data-index="${index}">
+                    <div class="historico-header"><span>${formatarData(item.data)}</span><button class="delete-btn"><i class="fa-solid fa-trash"></i></button></div>
+                    <p class="historico-pergunta">${item.pergunta}</p><p class="historico-resposta">${item.resposta}</p>
+                </div>`).join('') : `<div class="empty-state"><i class="fa-regular fa-comment-dots"></i><p>Nenhuma reflexão encontrada</p></div>`;
+            const modalContent = `<div class="modal-header"><h2>Histórico de Reflexões</h2><button class="close-btn">&times;</button></div><div class="historico-container">${itemsHtml}</div>`;
+            abrirModal('historicoReflexoesModal', modalContent);
+        });
+        
+        document.getElementById('conquistaCard')?.addEventListener('click', (e) => {
+            if (e.target.closest('textarea, button')) return;
+            let itemsHtml = conquistas.length > 0 ? conquistas.map((item, index) => `
+                <div class="historico-item" data-index="${index}">
+                    <div class="historico-header"><span>${formatarData(item.data)}</span><button class="delete-btn"><i class="fa-solid fa-trash"></i></button></div>
+                    <p class="historico-resposta">${item.resposta}</p>
+                </div>`).join('') : `<div class="empty-state"><i class="fa-solid fa-trophy"></i><p>Nenhuma conquista encontrada</p></div>`;
+            const modalContent = `<div class="modal-header"><h2>Histórico de Conquistas</h2><button class="close-btn">&times;</button></div><div class="historico-container">${itemsHtml}</div>`;
+            abrirModal('historicoConquistasModal', modalContent);
+        });
+    };
+
+    // Inicia a aplicação
+    init();
+});
