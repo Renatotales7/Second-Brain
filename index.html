@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Segundo Cérebro</title>
-    <!-- CORREÇÃO: Caminho relativo explícito para o CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
@@ -51,7 +53,7 @@
         </section>
 
         <!-- Card Lembretes -->
-        <section class="card">
+        <section id="lembretesCard" class="card">
             <div class="card-header">
                 <i class="fa-regular fa-bell"></i>
                 <h2>Lembretes</h2>
@@ -69,60 +71,32 @@
         </section>
     </main>
 
+    <!-- ===== MENU DE NAVEGAÇÃO INFERIOR ===== -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <i class="fa-solid fa-house"></i>
+            <span>Início</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Planejamento</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-book"></i>
+            <span>Diário</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-gear"></i>
+            <span>Ajustes</span>
+        </a>
+    </nav>
+
     <!-- ===== MODAIS ===== -->
-
-    <!-- Modal Gerenciar Roda da Vida -->
-    <div id="gerenciarRodaModal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Gerenciar Roda da Vida</h2>
-                <button class="close-btn">&times;</button>
-            </div>
-            <div id="listaPropriedadesRoda" class="propriedades-container"></div>
-            <div class="card add-prop-card">
-                <h3>Nova Propriedade</h3>
-                <input type="text" id="novaPropNome" placeholder="Nome da Área (Ex: Estudos)">
-                <div class="input-group">
-                    <div>
-                        <label for="novaPropMeta">Meta</label>
-                        <input type="number" id="novaPropMeta" value="10" min="1" max="10">
-                    </div>
-                    <div>
-                        <label for="novaPropAtual">Atual</label>
-                        <input type="number" id="novaPropAtual" value="5" min="0" max="10">
-                    </div>
-                </div>
-                <button id="adicionarPropriedadeBtn" class="btn btn-accent">
-                    <i class="fa-solid fa-plus"></i> Adicionar Propriedade
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Histórico de Reflexões -->
-    <div id="historicoReflexoesModal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Histórico de Reflexões</h2>
-                <button class="close-btn">&times;</button>
-            </div>
-            <div id="listaHistoricoReflexoes" class="historico-container"></div>
-        </div>
-    </div>
-
-    <!-- Modal Histórico de Conquistas -->
-    <div id="historicoConquistasModal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Histórico de Conquistas</h2>
-                <button class="close-btn">&times;</button>
-            </div>
-            <div id="listaHistoricoConquistas" class="historico-container"></div>
-        </div>
-    </div>
+    <div id="gerenciarRodaModal" class="modal-overlay hidden"></div>
+    <div id="historicoReflexoesModal" class="modal-overlay hidden"></div>
+    <div id="historicoConquistasModal" class="modal-overlay hidden"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- CORREÇÃO: Caminho relativo explícito para o JavaScript -->
     <script src="./script.js"></script>
 
 </body>
