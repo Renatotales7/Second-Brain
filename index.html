@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Segundo Cérebro</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+    <main class="container">
+        <!-- Card Roda da Vida -->
+        <section id="rodaDaVidaCard" class="card clickable">
+            <div class="card-header">
+                <i class="fa-solid fa-bullseye"></i>
+                <h2>Roda da Vida</h2>
+            </div>
+            <div class="card-body">
+                <canvas id="rodaDaVidaChart"></canvas>
+                <p class="center-text">Clique para gerenciar suas áreas</p>
+            </div>
+        </section>
+
+        <!-- Card Reflexão Diária (agora clicável) -->
+        <section id="reflexaoCard" class="card clickable">
+            <div class="card-header">
+                <i class="fa-regular fa-comment-dots"></i>
+                <h2>Reflexão Diária</h2>
+            </div>
+            <div class="card-body">
+                <p><strong id="perguntaDoDia"></strong></p>
+                <textarea id="reflexaoInput" placeholder="Escreva sua reflexão aqui..."></textarea>
+                <button id="salvarReflexaoBtn" class="btn btn-primary">Salvar Reflexão</button>
+            </div>
+        </section>
+
+        <!-- Card Conquista Diária (agora clicável) -->
+        <section id="conquistaCard" class="card clickable">
+            <div class="card-header">
+                <i class="fa-solid fa-trophy"></i>
+                <h2>Conquista Diária</h2>
+            </div>
+            <div class="card-body">
+                <p>Registre sua vitória de hoje:</p>
+                <textarea id="conquistaInput" placeholder="Descreva sua conquista ou vitória do dia..."></textarea>
+                <button id="salvarConquistaBtn" class="btn btn-secondary">Salvar Conquista</button>
+            </div>
+        </section>
+
+        <!-- Card Lembretes (sem alterações) -->
+        <section class="card">
+            <!-- ... (código dos lembretes inalterado) ... -->
+        </section>
+    </main>
+
+    <!-- ===== MODAIS ===== -->
+
+    <!-- Modal Gerenciar Roda da Vida (sem alterações) -->
+    <div id="gerenciarRodaModal" class="modal-overlay hidden">
+        <!-- ... (código do modal da Roda da Vida inalterado) ... -->
+    </div>
+
+    <!-- NOVO: Modal Histórico de Reflexões -->
+    <div id="historicoReflexoesModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Histórico de Reflexões</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div id="listaHistoricoReflexoes" class="historico-container">
+                <!-- O histórico será inserido aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- NOVO: Modal Histórico de Conquistas -->
+    <div id="historicoConquistasModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Histórico de Conquistas</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div id="listaHistoricoConquistas" class="historico-container">
+                <!-- O histórico será inserido aqui -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>
