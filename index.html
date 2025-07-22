@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segundo Cérebro</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#dashboard-page" class="nav-link active" data-page="dashboard-page">Dashboard</a></li>
+                <li><a href="#planejamento-page" class="nav-link" data-page="planejamento-page">Planejamento</a></li>
+                <li><a href="#metas-page" class="nav-link" data-page="metas-page">Metas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="dashboard-page" class="page active"></section>
+        <section id="planejamento-page" class="page">
+            <div class="card-grid">
+                <section class="card roda-da-vida">
+                    <h3>Roda da Vida</h3>
+                    <div class="progress-indicator">
+                        <span>Nível de Equilíbrio Geral:</span>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    <canvas id="rodaDaVidaChart"></canvas>
+                    <button class="icon-button" aria-label="Gerenciar Roda da Vida">
+                        <img src="" alt="Gerenciar">
+                    </button>
+                </section>
+
+                <section class="card reflexao">
+                    <h3>Reflexão Diária</h3>
+                    <div class="gamification-counter">
+                        <span class="fire-icon">🔥</span>
+                        <span class="streak-text">0 dias seguidos!</span>
+                    </div>
+                    <h3 class="pergunta-do-dia"></h3>
+                    <textarea placeholder="Escreva sua reflexão aqui..."></textarea>
+                    <button class="save-button">Salvar Reflexão</button>
+                </section>
+
+                <section class="card conquista">
+                    <h3>Conquista Diária</h3>
+                    <div class="gamification-counter">
+                        <span class="fire-icon">🔥</span>
+                        <span class="streak-text">0 dias seguidos!</span>
+                    </div>
+                    <h3 class="pergunta-do-dia"></h3>
+                    <textarea placeholder="Descreva sua conquista aqui..."></textarea>
+                    <button class="save-button">Salvar Conquista</button>
+                </section>
+
+                <section class="card lembretes">
+                    <h3>Lembretes</h3>
+                    <ul class="lembretes-list"></ul>
+                    <p class="empty-state">Nenhum lembrete ainda. Clique em 
+'+ Adicionar'
+ para começar!</p>
+                    <button class="add-button">+ Adicionar Lembrete</button>
+                </section>
+            </div>
+        </section>
+        <section id="metas-page" class="page"></section>
+    </main>
+
+    <div id="rodaDaVidaModal" class="modal" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <button class="close-button" aria-label="Fechar">&times;</button>
+            <h4>Gerenciar Roda da Vida</h4>
+            <!-- Conteúdo do modal Roda da Vida -->
+        </div>
+    </div>
+
+    <div id="historicoReflexoesModal" class="modal" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <button class="close-button" aria-label="Fechar">&times;</button>
+            <h4>Histórico de Reflexões</h4>
+            <!-- Conteúdo do modal Histórico de Reflexões -->
+        </div>
+    </div>
+
+    <div id="historicoConquistasModal" class="modal" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <button class="close-button" aria-label="Fechar">&times;</button>
+            <h4>Histórico de Conquistas</h4>
+            <!-- Conteúdo do modal Histórico de Conquistas -->
+        </div>
+    </div>
+
+    <div id="undoNotification" class="undo-notification">
+        Lembrete excluído. <button class="undo-button">Desfazer</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
